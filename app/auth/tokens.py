@@ -1,7 +1,15 @@
 from datetime import timedelta
 
+from fastapi import Depends, Form, HTTPException
+from jwt import InvalidTokenError
+from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
+
 from app.auth import utils as auth_utils
 from app.core.config import settings
+from app.database.db_helper import db_helper
+from app.repositories.users import UserRepository
+from app.routers.routers_auth import oauth2_scheme
 from app.schemas.schemas import UserSchema
 
 TOKEN_TYPE = "type"
@@ -45,3 +53,79 @@ def create_refresh_token(user: UserSchema) -> str:
         token_data=jwt_payload,
         expire_timedelta=timedelta(days=settings.auth_jwt.refresh_token_expire_days),
     )
+
+
+def get_current_token_payload(token: str = Depends(oauth2_scheme)) -> UserSchema:
+    try:
+        payload = auth_utils.decode_jwt(token=token)
+    except InvalidTokenError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail=f"invalid token: {e}"
+        )
+    return payload
+
+
+def validate_token_type(payload: dict, token_type: str) -> bool:
+    current_token_type = payload.get(TOKEN_TYPE)
+    if current_token_type == token_type:
+        return True
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=f"invalid token type {current_token_type!r} expected {token_type!r}",
+    )
+
+
+async def get_user_by_token_sub(
+    payload: dict, session: AsyncSession = Depends(db_helper.session_dependency)
+) -> UserSchema:
+    username: str | None = payload.get("username")
+    user_repo = UserRepository(session)
+    user = await user_repo.get_user(username=username)
+    if user:
+        return user
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="token invalid (user not found)",
+    )
+
+
+async def get_current_auth_user(
+    payload: dict = Depends(get_current_token_payload),
+) -> UserSchema:
+    validate_token_type(payload, ACCESS_TOKEN_TYPE)
+    return await get_user_by_token_sub(payload)
+
+
+async def get_current_auth_user_for_refresh(
+    payload: dict = Depends(get_current_token_payload),
+) -> UserSchema:
+    validate_token_type(payload, REFRESH_TOKEN_TYPE)
+    return await get_user_by_token_sub(payload)
+
+
+def get_current_active_auth_user(user: UserSchema = Depends(get_current_auth_user)):
+    if user.active:
+        return user
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="user inactive")
+
+
+async def validate_auth_user(
+    username: str = Form(),
+    password: str = Form(),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    unauthorized_exc = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid username or password"
+    )
+    user_repo = UserRepository(session)
+    user = await user_repo.get_user(username=username)
+
+    if not user:
+        raise unauthorized_exc
+
+    if not auth_utils.validate_password(
+        password=password,
+        hashed_password=user.password,
+    ):
+        raise unauthorized_exc
+    return user

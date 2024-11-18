@@ -6,8 +6,8 @@ from fastapi import FastAPI
 from app.core.setup_test_data import setup_execute
 from app.database.db_helper import db_helper
 from app.database.models import Base
+from app.routers.routers_articles import router as blog_router
 from app.routers.routers_auth import router as auth_router
-from app.routers.routers_blog import router as blog_router
 
 
 @asynccontextmanager

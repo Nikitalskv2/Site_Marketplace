@@ -34,8 +34,7 @@ def send_email(token, address):
 
         server.sendmail(
             sender,
-            sender,
-            # to_address,
+            address,
             msg.as_string(),
         )
         server.quit()

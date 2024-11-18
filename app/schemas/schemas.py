@@ -35,6 +35,7 @@ class CategoryArticle(BaseModel):
 
 class Article(BaseModel):
     article_name: str
+    short_description: str
     link_main_image: str
     link_body: str
     created_data: str

@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import TSVECTOR, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from app.core.config import settings
@@ -57,4 +57,11 @@ class ArticleModel(Base):
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=settings.timezone), onupdate=func.now(), nullable=True
+    )
+    search_vector = mapped_column(
+        TSVECTOR,
+        nullable=True,
+        server_default=func.to_tsvector(
+            "russian", article_name + " " + short_description
+        ),
     )
