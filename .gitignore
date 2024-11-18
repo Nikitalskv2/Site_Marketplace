@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 .idea/
+app/auth/certs/
 *.py[cod]
 *$py.class
 
