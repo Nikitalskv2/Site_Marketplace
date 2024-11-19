@@ -38,5 +38,3 @@ class DB_halper:
 
 
 db_helper = DB_halper(db_url=settings.DATABASE_URL_asyncpg)
-
-# db_helper_test = DB_halper(db_url=settings.TEST_DATABASE_asyncpg)

@@ -2,7 +2,6 @@ from datetime import datetime
 
 import redis
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPBearer, OAuth2PasswordBearer
 from pydantic import EmailStr
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,18 +13,18 @@ from app.auth.tokens import (
     create_refresh_token,
     get_current_auth_user_for_refresh,
     get_current_token_payload,
+    http_bearer,
+    oauth2_scheme,
     validate_auth_user,
 )
 from app.database.db_helper import db_helper
 from app.database.models import UserModel
-from app.repositories.users import UserRepository
+from app.repositories.users_repository import UserRepository
 from app.schemas.schemas import TokenInfo, UserSchema
 
-http_bearer = HTTPBearer(auto_error=False)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/jwt/login/")
 redis_client = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
 
-router = APIRouter(prefix="/jwt", tags=["JWT"], dependencies=[Depends(http_bearer)])
+router = APIRouter(prefix="/Users", tags=["Users"], dependencies=[Depends(http_bearer)])
 
 
 @router.post("/register/", response_model=UserSchema)

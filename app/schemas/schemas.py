@@ -34,8 +34,9 @@ class CategoryArticle(BaseModel):
 
 
 class Article(BaseModel):
-    article_name: str
+    title: str
     short_description: str
-    link_main_image: str
     link_body: str
-    created_data: str
+    s3_key: str
+    created_data: str | None = None
+    author: str

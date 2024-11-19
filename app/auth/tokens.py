@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from fastapi import Depends, Form, HTTPException
+from fastapi.security import HTTPBearer, OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -8,13 +9,15 @@ from starlette import status
 from app.auth import utils as auth_utils
 from app.core.config import settings
 from app.database.db_helper import db_helper
-from app.repositories.users import UserRepository
-from app.routers.routers_auth import oauth2_scheme
+from app.repositories.users_repository import UserRepository
 from app.schemas.schemas import UserSchema
 
 TOKEN_TYPE = "type"
 ACCESS_TOKEN_TYPE = "access"
 REFRESH_TOKEN_TYPE = "refresh"
+
+http_bearer = HTTPBearer(auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/jwt/login/")
 
 
 def create_jwt(

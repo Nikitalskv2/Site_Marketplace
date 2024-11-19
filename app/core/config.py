@@ -17,12 +17,9 @@ class AuthJWT(BaseModel):
 
 
 class Settings(BaseSettings):
-    # api_v1_prefix: str = "/api/v1"
     auth_jwt: AuthJWT = AuthJWT()
-    # db: DbSettings = DbSettings()
     timezone: str
     tz: ZoneInfo
-    # db_echo: bool = True
     DB_HOST: str = "localhost"
     DB_PORT: int = 5432
     DB_NAME: str = "postgres"
