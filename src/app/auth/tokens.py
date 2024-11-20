@@ -6,11 +6,11 @@ from jwt import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from app.auth import utils as auth_utils
-from app.core.config import settings
-from app.database.db_helper import db_helper
-from app.repositories.users_repository import UserRepository
-from app.schemas.schemas import UserSchema
+from src.app.auth import utils as auth_utils
+from src.app.core.config import settings
+from src.app.database.db_helper import db_helper
+from src.app.repositories.users_repository import UserRepository
+from src.app.schemas.schemas import UserSchema
 
 TOKEN_TYPE = "type"
 ACCESS_TOKEN_TYPE = "access"

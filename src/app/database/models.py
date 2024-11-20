@@ -5,7 +5,7 @@ from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.dialects.postgresql import TSVECTOR, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from app.core.config import settings
+from src.app.core.config import settings
 
 
 class Base(DeclarativeBase):
