@@ -2,15 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.params import Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.tokens import (
+from src.app.auth.tokens import (
     get_current_active_auth_user,
     get_current_token_payload,
     http_bearer,
 )
-from app.database.db_helper import db_helper
-from app.repositories import article_repository, s3_repository
-from app.schemas.schemas import UserSchema
-from app.services.article_service import ArticleService
+from src.app.database.db_helper import db_helper
+from src.app.repositories import s3_repository
+from src.app.repositories import article_repository
+from src.app.schemas.schemas import UserSchema
+from src.app.services.article_service import ArticleService
 
 article_service = ArticleService(article_repository, s3_repository)
 

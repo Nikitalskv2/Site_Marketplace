@@ -3,10 +3,10 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 
-from app.database.db_helper import db_helper
-from app.database.models import Base
-from app.routers.routers_articles import router as blog_router
-from app.routers.routers_auth import router as auth_router
+from src.app.database.db_helper import db_helper
+from src.app.database.models import Base
+from src.app.routers.routers_articles import router as blog_router
+from src.app.routers.routers_auth import router as auth_router
 
 
 @asynccontextmanager

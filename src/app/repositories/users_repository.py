@@ -4,7 +4,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.database.models import UserModel
+from src.app.database.models import UserModel
 
 
 class IUserRepository(ABC):

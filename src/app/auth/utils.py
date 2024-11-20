@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import bcrypt
 import jwt
 
-from app.core.config import settings
+from src.app.core.config import settings
 
 
 def encode_jwt(

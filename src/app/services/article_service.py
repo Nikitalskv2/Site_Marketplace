@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.minio_helper import S3Repository
-from app.repositories.article_repository import ArticleRepository
+from src.app.database.minio_helper import S3Repository
+from src.app.repositories.article_repository import ArticleRepository
 
 
 class ArticleService:

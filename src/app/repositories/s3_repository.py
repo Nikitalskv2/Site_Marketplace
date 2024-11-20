@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.sql.expression import func
 
-from app.database.models import ArticleModel
+from src.app.database.models import ArticleModel
 
 
 class ArticleRepository:
