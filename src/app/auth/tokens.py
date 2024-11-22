@@ -121,7 +121,7 @@ async def validate_auth_user(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid username or password"
     )
     user_repo = UserRepository(session)
-    user = await user_repo.get_user(username=username)
+    user = await user_repo.get(username=username)
 
     if not user:
         raise unauthorized_exc

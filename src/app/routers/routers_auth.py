@@ -39,7 +39,7 @@ async def auth_user_register(
         user = UserSchema(
             username=username, password=auth_utils.hash_password(password), email=email
         )
-        await user_repo.create_user(UserModel(**user.model_dump()))
+        await user_repo.add(UserModel(**user.model_dump()))
         token = create_access_token(user)
         send_email(token, address=email)
         return user
@@ -72,7 +72,7 @@ async def confirmation_email_user(
 ):
     user_repo = UserRepository(session)
     try:
-        await user_repo.update_active_user(username=payload["username"])
+        await user_repo.update(username=payload["username"])
         return status.HTTP_200_OK
     except NoResultFound:
         raise HTTPException(

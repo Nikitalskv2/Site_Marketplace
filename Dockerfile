@@ -37,7 +37,7 @@ RUN python -m ensurepip --upgrade \
     && python -m pip install --upgrade pip \
     && pip install "poetry==$POETRY_VERSION"
 
-WORKDIR /var/install/api/src
+WORKDIR /var/install/api
 
 # Копируем файлы зависимостей
 COPY ./pyproject.toml ./poetry.lock /var/install/api/
@@ -62,6 +62,7 @@ RUN groupadd -r web \
 
 USER web
 
+
 COPY ./src/ /var/install/api/src/
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+CMD ["uvicorn", "src.app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
