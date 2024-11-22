@@ -9,7 +9,11 @@ from src.app.database.models import UserModel
 
 class IUserRepository(ABC):
     @abstractmethod
-    async def get(self, user_id: int):
+    async def check_user(self, username: str):
+        pass
+
+    @abstractmethod
+    async def get(self, username: str):
         pass
 
     @abstractmethod
@@ -17,7 +21,7 @@ class IUserRepository(ABC):
         pass
 
     @abstractmethod
-    async def update(self, user: UserModel):
+    async def update(self, username: str):
         pass
 
     @abstractmethod
@@ -39,18 +43,18 @@ class UserRepository(IUserRepository):
         )
         return result.scalar() is not None
 
-    async def get_user(self, username: str):
+    async def get(self, username: str):
         async with self.session.begin():
             result = await self.session.execute(
                 select(UserModel).where(UserModel.username == username)
             )
             return result.scalar_one_or_none()
 
-    async def create_user(self, user: UserModel):
+    async def add(self, user: UserModel):
         self.session.add(user)
         await self.session.commit()
 
-    async def update_active_user(self, username: str):
+    async def update(self, username: str):
         result = await self.session.execute(
             select(UserModel).where(UserModel.username == username)
         )
@@ -60,9 +64,9 @@ class UserRepository(IUserRepository):
         user.is_active = True
         await self.session.commit()
 
-    async def delete(self, user_id: int):
+    async def delete(self, username: str):
         async with self.session.begin():
-            user = await self.get(user_id)
+            user = await self.get(username)
             if user:
                 await self.session.delete(user)
                 await self.session.commit()

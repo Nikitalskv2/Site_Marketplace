@@ -1,7 +1,7 @@
-from contextlib import asynccontextmanager
-
+import asyncio
 import uvicorn
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 
 from src.app.database.db_helper import db_helper
 from src.app.database.models import Base
@@ -11,9 +11,18 @@ from src.app.routers.routers_auth import router as auth_router
 
 @asynccontextmanager
 async def lifespan(apps: FastAPI):
-    async with db_helper.engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    for _ in range(10):
+        try:
+            async with db_helper.engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            break
+        except Exception as e:
+            print(f"Database not ready, retrying... {e}")
+            await asyncio.sleep(2)
+    else:
+        raise RuntimeError("Database not ready after 10 retries")
     yield
+
     async with db_helper.engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.commit()

@@ -20,11 +20,11 @@ class Settings(BaseSettings):
     auth_jwt: AuthJWT = AuthJWT()
     timezone: str
     tz: ZoneInfo
-    DB_HOST: str = "localhost"
+    DB_HOST: str = "postgres"
     DB_PORT: int = 5432
     DB_NAME: str = "postgres"
     DB_USER: str = "postgres"
-    DB_PASS: str = "123456"
+    DB_PASS: str = "postgres"
     DB_echo: bool = False
 
     @property
